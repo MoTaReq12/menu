@@ -1,144 +1,77 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>منيو المطعم</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --mustard: #f2b21b;
-            --mustard-dark: #d99610;
-            --bg: #f6f1e8;
-            --bg2: #f3eadc;
-            --paper: #fffaf2;
-            --paper2: #ffffff;
-            --text: #1b1b1b;
-            --muted: #6f6f6f;
-            --line: #eadfcd;
-            --shadow: 0 10px 30px rgba(0, 0, 0, .08);
-            --radius: 18px;
-        }
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            margin: 0;
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(180deg, var(--bg), var(--bg2));
-            color: var(--text);
-        }
-
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 200;
-            text-align: center;
-            padding: 22px 15px 14px;
-            background: linear-gradient(180deg, #fffaf2, #f7efe2);
-            border-bottom: 1px solid var(--line);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, .06);
-        }
-
-        .brand{
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          gap:12px;
-          margin-bottom:8px;
-        }
-        .logo{
-          width:52px;
-          height:52px;
-          border-radius:14px;
-          object-fit:cover;
-          border:2px solid #fff;
-          box-shadow:0 10px 25px rgba(0,0,0,.12);
-        }
-
-        .header h1 { margin: 0; font-size: 1.75rem; font-weight: 900; }
-        .header p { margin: 6px 0 0; font-size: .95rem; color: var(--muted); }
-
-        .top-tools { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
-        .search-wrap { position: relative; width: min(520px, 92vw); }
-        .search { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 12px 42px 12px 14px; font-size: .95rem; outline: none; box-shadow: 0 10px 25px rgba(0, 0, 0, .05); }
-        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: .55; font-size: 18px; }
-
-        .filters { position: sticky; top: 120px; z-index: 150; display: flex; gap: 10px; overflow-x: auto; padding: 14px 15px; background: linear-gradient(180deg, #fffaf2, #f7efe2); border-bottom: 1px solid var(--line); }
-        .filters::-webkit-scrollbar { display: none; }
-        .filter-btn {
-            flex: 0 0 auto; border: 1px solid var(--line); background: rgba(255, 255, 255, .78);
-            color: var(--text); padding: 9px 16px; border-radius: 999px;
-            cursor: pointer; font-size: .9rem; font-weight: 800; transition: .22s;
-            white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, .04);
-        }
-        .filter-btn:hover { transform: translateY(-2px); border-color: #e3c88d; }
-        .filter-btn.active { background: var(--mustard); border-color: var(--mustard-dark); color: #1a1a1a; }
-
-        #menu-content { padding-bottom: 80px; }
-
-        .section { padding: 22px 15px; }
-        .section-title {
-            font-size: 1.25rem; font-weight: 900; margin: 0 0 14px;
-            padding-right: 10px; position: relative;
-        }
-        .section-title::after {
-            content: '';
-            width: 52px; height: 4px; background: var(--mustard);
-            position: absolute; bottom: -7px; right: 0; border-radius: 20px;
-        }
-        .section-count { font-size: .85rem; color: var(--muted); font-weight: 800; }
-
-        .items-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-        @media (min-width:900px) { .items-grid { grid-template-columns: 1fr 1fr; } }
-
-        .menu-item {
-            display: flex; align-items: center; gap: 14px;
-            background: linear-gradient(180deg, var(--paper), var(--paper2));
-            border: 1px solid rgba(234, 223, 205, .9);
-            border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
-            transition: .25s; overflow: hidden;
-            opacity: 0; transform: translateY(12px);
-        }
-        .menu-item.is-visible { opacity: 1; transform: translateY(0); }
-        .menu-item:hover { transform: translateY(-3px); box-shadow: 0 18px 45px rgba(0, 0, 0, .11); }
-
-        .item-img { width: 82px; height: 82px; border-radius: 16px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 10px 25px rgba(0, 0, 0, .12); background: #eee; flex: 0 0 auto; }
-        .item-info { flex: 1; min-width: 0; }
-        .item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-        .item-name { font-weight: 900; font-size: 1.03rem; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-price { background: var(--mustard); color: #1a1a1a; font-weight: 900; font-size: .9rem; padding: 7px 12px; border-radius: 999px; white-space: nowrap; }
-        .item-desc { margin-top: 7px; font-size: .88rem; color: var(--muted); line-height: 1.55; overflow: hidden; max-height: 2.9em; }
-
-        #toTop { position: fixed; bottom: 18px; left: 18px; z-index: 500; border: none; background: var(--mustard); color: #1a1a1a; font-weight: 900; border-radius: 999px; padding: 12px 14px; cursor: pointer; box-shadow: 0 16px 35px rgba(242, 178, 27, .25); opacity: 0; transform: translateY(12px); pointer-events: none; transition: .25s; }
-        #toTop.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>منيو المطعم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mustard: #f2b21b; --mustard-dark: #d99610;
+  --bg: #f6f1e8; --bg2: #f3eadc;
+  --paper: #fffaf2; --paper2: #ffffff;
+  --text: #1b1b1b; --muted: #6f6f6f;
+  --line: #eadfcd; --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+  --radius: 18px;
+}
+* {box-sizing:border-box;}
+body {margin:0;font-family:'Cairo',sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);}
+.header {position:sticky;top:0;z-index:200;text-align:center;padding:22px 15px 14px;background:linear-gradient(180deg,#fffaf2,#f7efe2);border-bottom:1px solid var(--line);box-shadow:0 8px 25px rgba(0,0,0,.06);}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;}
+.logo{width:52px;height:52px;border-radius:14px;object-fit:cover;border:2px solid #fff;box-shadow:0 10px 25px rgba(0,0,0,.12);}
+.header h1{margin:0;font-size:1.75rem;font-weight:900;}
+.header p{margin:6px 0 0;font-size:.95rem;color:var(--muted);}
+.top-tools{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.search-wrap{position:relative;width:min(520px,92vw);}
+.search{width:100%;border:1px solid var(--line);background:#fff;border-radius:999px;padding:12px 42px 12px 14px;font-size:.95rem;outline:none;box-shadow:0 10px 25px rgba(0,0,0,.05);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.55;font-size:18px;}
+.filters{position:sticky;top:120px;z-index:150;display:flex;gap:10px;overflow-x:auto;padding:14px 15px;background:linear-gradient(180deg,#fffaf2,#f7efe2);border-bottom:1px solid var(--line);}
+.filters::-webkit-scrollbar{display:none;}
+.filter-btn{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.78);color:var(--text);padding:9px 16px;border-radius:999px;cursor:pointer;font-size:.9rem;font-weight:800;transition:.22s;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.04);}
+.filter-btn:hover{transform:translateY(-2px);border-color:#e3c88d;}
+.filter-btn.active{background:var(--mustard);border-color:var(--mustard-dark);color:#1a1a1a;}
+#menu-content{padding-bottom:80px;}
+.section{padding:22px 15px;}
+.section-title{font-size:1.25rem;font-weight:900;margin:0 0 14px;padding-right:10px;position:relative;}
+.section-title::after{content:'';width:52px;height:4px;background:var(--mustard);position:absolute;bottom:-7px;right:0;border-radius:20px;}
+.section-count{font-size:.85rem;color:var(--muted);font-weight:800;}
+.items-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:900px){.items-grid{grid-template-columns:1fr 1fr;}}
+.menu-item{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,var(--paper),var(--paper2));border:1px solid rgba(234,223,205,.9);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);transition:.25s;overflow:hidden;opacity:0;transform:translateY(12px);}
+.menu-item.is-visible{opacity:1;transform:translateY(0);}
+.menu-item:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(0,0,0,.11);}
+.item-img{width:82px;height:82px;border-radius:16px;object-fit:cover;border:3px solid #fff;box-shadow:0 10px 25px rgba(0,0,0,.12);background:#eee;flex:0 0 auto;}
+.item-info{flex:1;min-width:0;}
+.item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.item-name{font-weight:900;font-size:1.03rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item-price{background:var(--mustard);color:#1a1a1a;font-weight:900;font-size:.9rem;padding:7px 12px;border-radius:999px;white-space:nowrap;}
+.item-desc{margin-top:7px;font-size:.88rem;color:var(--muted);line-height:1.55;overflow:hidden;max-height:2.9em;}
+#toTop{position:fixed;bottom:18px;left:18px;z-index:500;border:none;background:var(--mustard);color:#1a1a1a;font-weight:900;border-radius:999px;padding:12px 14px;cursor:pointer;box-shadow:0 16px 35px rgba(242,178,27,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;}
+#toTop.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+</style>
 </head>
-
 <body>
 
-    <div class="header">
-        <div class="brand">
-            <img id="logo" class="logo" src="" alt="logo" style="display:none;">
-            <div>
-                <h1 id="restaurantName">اسم المطعم</h1>
-                <p id="tagline">امسح الكود واستمتع بقائمتنا</p>
-            </div>
-        </div>
-
-        <div class="top-tools">
-            <div class="search-wrap">
-                <span class="search-icon">🔎</span>
-                <input id="search" class="search" type="text" placeholder="ابحث عن صنف... (مثال: برجر / فراخ)">
-            </div>
-        </div>
+<div class="header">
+  <div class="brand">
+    <img id="logo" class="logo" src="" alt="logo" style="display:none;">
+    <div>
+      <h1 id="restaurantName">اسم المطعم</h1>
+      <p id="tagline">امسح الكود واستمتع بقائمتنا</p>
     </div>
+  </div>
+  <div class="top-tools">
+    <div class="search-wrap">
+      <span class="search-icon">🔎</span>
+      <input id="search" class="search" type="text" placeholder="ابحث عن صنف... (مثال: برجر / فراخ)">
+    </div>
+  </div>
+</div>
 
-    <div id="category-filters" class="filters"></div>
-    <div id="menu-content"></div>
-    <div id="loader"></div>
-    <button id="toTop" aria-label="الرجوع للأعلى">⬆️</button>
+<div id="category-filters" class="filters"></div>
+<div id="menu-content"></div>
+<div id="loader"></div>
+<button id="toTop" aria-label="الرجوع للأعلى">⬆️</button>
 
 <script>
 const MENU_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCkh_74dCKAmyqcyMwpI_7GqoQ_fv9CWWiJo9d1MokUkEY4CuRh9e19frtztbPg6WA-hMm0BaQgh9D/pub?output=csv";
@@ -158,77 +91,68 @@ async function loadSettings(){
       const cols = csvSplit(r);
       const key = (cols[0]||"").replace(/"/g,"").trim();
       const val = (cols[1]||"").replace(/"/g,"").trim();
-      if(key) settings[key] = val;
+      if(key) settings[key]=val;
     });
-    if(settings.restaurant_name) document.getElementById("restaurantName").innerText = settings.restaurant_name;
-    if(settings.tagline) document.getElementById("tagline").innerText = settings.tagline;
+    if(settings.restaurant_name) document.getElementById("restaurantName").innerText=settings.restaurant_name;
+    if(settings.tagline) document.getElementById("tagline").innerText=settings.tagline;
     if(settings.logo && settings.logo.length>10){
-      const logo = document.getElementById("logo");
-      logo.src = settings.logo;
-      logo.style.display = "block";
+      const logo=document.getElementById("logo");
+      logo.src=settings.logo;
+      logo.style.display="block";
     }
-  }catch(e){}
+  }catch(e){console.warn("Settings load failed",e);}
 }
 
 function buildItemHTML(item){
-  const name = escapeHTML(item.name);
-  const desc = escapeHTML(item.desc||"");
-  const price = escapeHTML(item.price);
-  const img = item.img && item.img.length>5 ? item.img : "https://via.placeholder.com/120";
-  return `
-    <div class="menu-item" data-name="${name}" data-desc="${desc}">
-      <img loading="lazy" src="${img}" class="item-img" alt="${name}">
-      <div class="item-info">
-        <div class="item-top">
-          <span class="item-name" title="${name}">${name}</span>
-          <span class="item-price">${price} ج.م</span>
-        </div>
-        <div class="item-desc">${desc}</div>
-    </div>`;
+  const name=escapeHTML(item.name), desc=escapeHTML(item.desc||""), price=escapeHTML(item.price);
+  const img=item.img&&item.img.length>5?item.img:"https://via.placeholder.com/120";
+  return `<div class="menu-item" data-name="${name}" data-desc="${desc}">
+    <img loading="lazy" src="${img}" class="item-img" alt="${name}">
+    <div class="item-info">
+      <div class="item-top">
+        <span class="item-name" title="${name}">${name}</span>
+        <span class="item-price">${price} ج.م</span>
+      </div>
+      <div class="item-desc">${desc}</div>
+    </div>
+  </div>`;
 }
 
-function buildSection(catName, items){
-  const sec = document.createElement("div");
+function buildSection(catName,items){
+  const sec=document.createElement("div");
   sec.className="section";
   sec.setAttribute("data-cat",catName);
-  sec.innerHTML = `
-    <div class="section-title">
-      <span>${escapeHTML(catName)}</span>
-      <span class="section-count">${items.length} صنف</span>
-    </div>
-    <div class="items-grid">
-      ${items.map(buildItemHTML).join("")}
-    </div>`;
+  sec.innerHTML=`<div class="section-title"><span>${escapeHTML(catName)}</span><span class="section-count">${items.length} صنف</span></div>
+  <div class="items-grid">${items.map(buildItemHTML).join("")}</div>`;
   return sec;
 }
 
 async function loadMenu(){
   try{
-    document.getElementById("loader").innerHTML="";
     const res = await fetch(MENU_URL);
     const data = await res.text();
     const rows = data.split(/\r?\n/).slice(1);
     const categories = {};
     rows.forEach(r=>{
-      const cols = csvSplit(r);
-      const name = (cols[0]||"").replace(/"/g,"").trim();
-      const price = (cols[1]||"").replace(/"/g,"").trim();
-      const img = (cols[2]||"").replace(/"/g,"").trim();
-      const cat = (cols[3]||"أصناف متنوعة").replace(/"/g,"").trim();
-      const desc = (cols[4]||"").replace(/"/g,"").trim();
+      const cols=csvSplit(r);
+      const name=(cols[0]||"").replace(/"/g,"").trim();
+      const price=(cols[1]||"").replace(/"/g,"").trim();
+      const img=(cols[2]||"").replace(/"/g,"").trim();
+      const cat=(cols[3]||"أصناف متنوعة").replace(/"/g,"").trim();
+      const desc=(cols[4]||"").replace(/"/g,"").trim();
       if(!name) return;
       if(!categories[cat]) categories[cat]=[];
       categories[cat].push({name,price,img,desc});
     });
-    const filt = document.getElementById("category-filters");
+    const filt=document.getElementById("category-filters");
     filt.innerHTML=`<button class="filter-btn active" data-cat="all">الكل</button>`;
-    const content = document.getElementById("menu-content");
+    const content=document.getElementById("menu-content");
     content.innerHTML="";
     Object.keys(categories).forEach(cat=>{
       filt.innerHTML+=`<button class="filter-btn" data-cat="${escapeHTML(cat)}">${escapeHTML(cat)}</button>`;
       content.appendChild(buildSection(cat,categories[cat]));
     });
-  }catch(e){}
+  }catch(e){console.warn("Menu load failed",e);}
 }
 
 loadSettings();
